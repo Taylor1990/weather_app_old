@@ -20,40 +20,37 @@ var City = React.createClass({
 
                 return {textValue: ''};
             },
-            componentDidMount : function() {
+            addCity: function() {
+                // TODO: проверить город регулярным выражением
                 var idButton = this.props.idButton;
                 var city_name = document.getElementById(this.props.idTextInput);
+                $.ajax({
+                    url: "http://api.openweathermap.org/data/2.5/weather",
+                    type: 'GET',
+                    data: {
+                        q: city_name.value,
+                        appid : '13cb7fc7bbcbb873b6c84b9e84df4507'
+                    },
+                    success: function(res) {
+                        var cities = localStorage.getItem('cities');
+                        var cities_array;
 
-                document.getElementById(idButton).onclick = function(){
-                    // TODO: проверить город регулярным выражением
-                    $.ajax({
-                        url: "http://api.openweathermap.org/data/2.5/weather",
-                        type: 'GET',
-                        data: {
-                            q: city_name.value,
-                            appid : '13cb7fc7bbcbb873b6c84b9e84df4507'
-                        },
-                        success: function(res) {
-                            var cities = localStorage.getItem('cities');
-                            var cities_array;
-
-                            if(cities) {
-                                cities_array = cities.split(',');
-                            } else {
-                                cities_array = [];
-                            }
-
-                            cities_array.push(city_name.value);
-                            localStorage.setItem('cities', cities_array.join());
+                        if(cities) {
+                            cities_array = cities.split(',');
+                        } else {
+                            cities_array = [];
                         }
-                    });
-                };
+
+                        cities_array.push(city_name.value);
+                        localStorage.setItem('cities', cities_array.join());
+                    }
+                });
             },
             render: function() {
                 return (
                     <div>
                         <input id = {this.props.idTextInput} type="text" defaultValue = {this.state.textValue}/>
-                        <input id = {this.props.idButton} type="button" value="Добавить город" />
+                        <input id = {this.props.idButton} type="button" value="Добавить город" onClick = {this.addCity}/>
                     </div>
                 );
             }
@@ -61,12 +58,32 @@ var City = React.createClass({
 
         var CityList = React.createClass({
             getInitialState: function(){
+                var cities = localStorage.getItem('cities');
+                var cities_array;
 
+                if(cities) {
+                    cities_array = cities.split(',');
+                    return {list: cities_array};
+                }
+
+                return {list: ''};
             },
             render: function() {
+                var CityItem = React.createClass({
+                   render: function() {
+                       return (
+                           <li>{this.props.title}</li>
+                       );
+                   }
+                });
+
                 return (
                     <ul>
-                        <li>Test</li>
+                        {
+                            this.state.list.map(function(item){
+                              return (<CityItem title={item} />);
+                            })
+                        }
                     </ul>
                 );
             }
