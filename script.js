@@ -130,48 +130,79 @@ var City = React.createClass({
 });
 
 var Weather = React.createClass({
+    getInitialState: function() {
+        return {data: false};
+    },
+    componentWillReceiveProps: function(nextData){
+        this.setState({data: nextData.data});
+    },
     getProperty: function (property) {
-        if (this.props.data) {
+        if (this.state.data) {
             switch (property) {
                 case 'lon':
-                    return this.props.data.coord.lon;
+                    return this.state.data.coord.lon;
                 case 'lat':
-                    return this.props.data.coord.lat;
+                    return this.state.data.coord.lat;
                 case 'temp':
-                    return Math.round(this.props.data.main.temp - 273.15);
+                    return Math.round(this.state.data.main.temp - 273.15);
                 case 'weather':
-                    return this.props.data.weather[0].main;
+                    return this.state.data.weather[0].main;
                 case 'description':
-                    return this.props.data.weather[0].description;
+                    return this.state.data.weather[0].description;
                 case 'pressure':
-                    return this.props.data.main.pressure;
+                    return this.state.data.main.pressure;
                 case 'humidity':
-                    return this.props.data.main.humidity;
+                    return this.state.data.main.humidity;
                 case 'temp_min':
-                    return Math.round(this.props.data.main.temp_min - 273.15);
+                    return Math.round(this.state.data.main.temp_min - 273.15);
                 case 'temp_max':
-                    return Math.round(this.props.data.main.temp_max - 273.15);
+                    return Math.round(this.state.data.main.temp_max - 273.15);
                 case 'sea_level':
-                    return this.props.data.main.sea_level;
+                    return this.state.data.main.sea_level;
                 case 'grnd_level':
-                    return this.props.data.main.grnd_level;
+                    return this.state.data.main.grnd_level;
                 case 'speed':
-                    return this.props.data.wind.speed;
+                    return this.state.data.wind.speed;
                 case 'deg':
-                    return this.props.data.wind.deg;
+                    return this.state.data.wind.deg;
                 case 'clouds':
-                    return this.props.data.clouds.all;
+                    return this.state.data.clouds.all;
                 case 'country':
-                    return this.props.data.sys.country;
+                    return this.state.data.sys.country;
                 case 'sunrise':
-                    return this.props.data.sys.sunrise;
+                    return this.state.data.sys.sunrise;
                 case 'sunset':
-                    return this.props.data.sys.sunset;
+                    return this.state.data.sys.sunset;
                 case 'name':
-                    return this.props.data.name;
+                    return this.state.data.name;
             }
         }
         return '';
+    },
+    changeLon: function(event) {
+        var data = this.state.data;
+        data.coord.lon = event.target.value;
+        this.setState({data: data});
+    },
+    changeLat: function(event) {
+        var data = this.state.data;
+        data.coord.lat = event.target.value;
+        this.setState({data: data});
+    },
+    getWeatherCoord: function() {
+        // TODO: проверка
+        $.ajax({
+            url: "http://api.openweathermap.org/data/2.5/weather",
+            type: 'GET',
+            data: {
+                lat: this.state.data.coord.lat,
+                lon: this.state.data.coord.lon,
+                appid: '13cb7fc7bbcbb873b6c84b9e84df4507'
+            },
+            success: function(res){
+                this.setState({data: res});
+            }.bind(this)
+        });
     },
     render: function () {
         return (
@@ -182,8 +213,9 @@ var Weather = React.createClass({
                     <td>Latitude</td>
                 </tr>
                 <tr>
-                    <td><input type="text" value={this.getProperty('lon')}/></td>
-                    <td><input type="text" value={this.getProperty('lat')}/></td>
+                    <td><input type="text" value={this.getProperty('lon')} onChange={this.changeLon}/></td>
+                    <td><input type="text" value={this.getProperty('lat')} onChange={this.changeLat}/></td>
+                    <td><input type="button" value="По координатам" onClick={this.getWeatherCoord}/></td>
                 </tr>
                 <tr>
                     <td>Weather</td>
