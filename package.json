@@ -1,0 +1,31 @@
+{
+  "name": "weather_app",
+  "version": "1.0.0",
+  "description": "weather_app",
+  "main": "server.js",
+  "dependencies": {
+    "babel": "^6.5.1",
+    "babel-core": "^6.5.1",
+    "express": "^4.13.3",
+    "jsx-loader": "^0.13.2",
+    "react-dom": "^0.14.7",
+    "react-loader": "^2.0.0",
+    "webpack": "^1.12.13"
+  },
+  "devDependencies": {
+    "webpack": "^1.12.13"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Taylor1990/weather_app.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Taylor1990/weather_app/issues"
+  },
+  "homepage": "https://github.com/Taylor1990/weather_app#readme"
+}
